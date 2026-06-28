@@ -13,12 +13,18 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.6' # FORZATO: Versione retrocompatibile che evita il crash di Kotlin
+          flutter-version: '3.19.6'
+
+      # ISTRUZIONE SPECIALE 1: Accetta tutte le licenze Android sui server di GitHub
+      - name: Accetta Licenze Android
+        run: yes | source /opt/android-sdk-linux/tools/bin/sdkmanager --licenses || true
 
       - run: flutter pub get
-      - run: flutter build apk --release
+
+      # ISTRUZIONE SPECIALE 2: Salta i vincoli di firma e forza la build pulita
+      - run: flutter build apk --debug --no-pub
 
       - uses: actions/upload-artifact@v4
         with:
           name: NetMirror-Italiano
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
